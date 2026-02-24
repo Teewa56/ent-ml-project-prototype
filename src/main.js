@@ -239,3 +239,12 @@ if (state.currentScreen === 'dashboard-screen') updateDashboard();
 
 // Initial Navigation (for dev)
 // navigateTo('registration-screen');
+
+// Expose functions to global scope for HTML onclick handlers
+window.navigateTo = navigateTo;
+window.selectPath = selectPath;
+window.handleRegistration = handleRegistration;
+window.handleLogTransaction = handleLogTransaction;
+window.handleLoanApplication = handleLoanApplication;
+window.closeDecision = closeDecision;
+window.sendRequest = sendRequest;
