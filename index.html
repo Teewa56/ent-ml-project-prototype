@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreditIQ Akure | AI Credit Scoring</title>
+    <link rel="stylesheet" href="/src/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app-container">
+        <!-- Splash Screen -->
+        <section id="splash-screen" class="screen active">
+            <div class="logo-icon">IQ</div>
+            <h1>CreditIQ</h1>
+            <p>Empowering Akure Businesses</p>
+            <button class="btn btn-outline" style="border-color: white; color: white;"
+                onclick="navigateTo('registration-screen')">Get Started</button>
+        </section>
+
+        <!-- Registration Screen -->
+        <section id="registration-screen" class="screen">
+            <h2>Welcome</h2>
+            <p>Let's get your business set up with a credit score.</p>
+
+            <div class="input-group">
+                <label>Your Name</label>
+                <input type="text" id="user-name" placeholder="e.g. Adeola Benson">
+            </div>
+
+            <div class="input-group">
+                <label>Business Name</label>
+                <input type="text" id="business-name" placeholder="e.g. Benson Provisions">
+            </div>
+
+            <div class="input-group">
+                <label>How do you mostly receive payments?</label>
+                <div class="path-card" onclick="selectPath('formal')">
+                    <h3>Bank Account</h3>
+                    <p>I use a bank for most business transactions.</p>
+                </div>
+                <div class="path-card" onclick="selectPath('informal')">
+                    <h3>Cash / Community</h3>
+                    <p>I operate mostly in cash and trust networks.</p>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="handleRegistration()">Continue</button>
+        </section>
+
+        <!-- Dashboard Screen -->
+        <section id="dashboard-screen" class="screen">
+            <header style="width: 100%; margin-bottom: 20px;">
+                <p style="color: #666;">Hello, <span id="display-name">Business Owner</span></p>
+                <h2 style="margin: 0;" id="display-business">Your Business</h2>
+            </header>
+
+            <div class="gauge-container">
+                <canvas id="score-gauge"></canvas>
+                <div class="score-text">
+                    <span class="score-number" id="current-score">450</span>
+                    <span class="score-label">Credit Score</span>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h4>Transactions</h4>
+                    <p id="stat-transactions">0</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Status</h4>
+                    <p id="stat-status" style="color: #ff9800;">Building</p>
+                </div>
+            </div>
+
+            <div class="actions-list">
+                <div class="action-item" onclick="navigateTo('log-transaction-screen')">
+                    <div class="action-icon">💸</div>
+                    <div class="action-info">
+                        <h4>Log Transaction</h4>
+                        <p>Record a sale or expense</p>
+                    </div>
+                </div>
+                <div class="action-item" onclick="navigateTo('score-breakdown-screen')">
+                    <div class="action-icon">📊</div>
+                    <div class="action-info">
+                        <h4>Score Breakdown</h4>
+                        <p>See what affects your score</p>
+                    </div>
+                </div>
+                <div class="action-item" onclick="navigateTo('loan-application-screen')">
+                    <div class="action-icon">🏦</div>
+                    <div class="action-info">
+                        <h4>Apply for Loan</h4>
+                        <p>Get instant credit decision</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="bottom-nav">
+                <div class="nav-item active" onclick="navigateTo('dashboard-screen')">
+                    <span class="nav-icon">🏠</span>
+                    Home
+                </div>
+                <div class="nav-item" onclick="navigateTo('score-breakdown-screen')">
+                    <span class="nav-icon">📉</span>
+                    Score
+                </div>
+                <div class="nav-item" onclick="navigateTo('loan-application-screen')">
+                    <span class="nav-icon">💰</span>
+                    Loans
+                </div>
+            </nav>
+        </section>
+        <!-- Log Transaction Screen -->
+        <section id="log-transaction-screen" class="screen">
+            <header style="margin-bottom: 24px;">
+                <button class="btn-outline"
+                    style="width: auto; padding: 8px 16px; font-size: 14px; margin-bottom: 16px;"
+                    onclick="navigateTo('dashboard-screen')">← Back</button>
+                <h2>Log a Transaction</h2>
+                <p>Record your daily sales or expenses to build your score.</p>
+            </header>
+
+            <div class="input-group">
+                <label>Transaction Type</label>
+                <select id="trans-type">
+                    <option value="sale">Sale (Income)</option>
+                    <option value="expense">Expense (Outflow)</option>
+                    <option value="supplier">Supplier Payment</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Amount (₦)</label>
+                <input type="number" id="trans-amount" placeholder="e.g. 5000">
+            </div>
+
+            <div class="input-group">
+                <label>Description</label>
+                <input type="text" id="trans-desc" placeholder="e.g. Sold 2 bags of rice">
+            </div>
+
+            <button class="btn btn-primary" onclick="handleLogTransaction()">Log Transaction</button>
+
+            <div id="log-success-msg"
+                style="display: none; text-align: center; color: var(--success-color); margin-top: 16px; font-weight: 500;">
+                ✅ Transaction logged! Your score is improving.
+            </div>
+        </section>
+
+        <!-- Score Breakdown Screen -->
+        <section id="score-breakdown-screen" class="screen">
+            <header style="margin-bottom: 24px;">
+                <button class="btn-outline"
+                    style="width: auto; padding: 8px 16px; font-size: 14px; margin-bottom: 16px;"
+                    onclick="navigateTo('dashboard-screen')">← Back</button>
+                <h2>Score Breakdown</h2>
+                <p>Explore the factors contributing to your credit worthiness.</p>
+            </header>
+
+            <div class="breakdown-card">
+                <div class="factor">
+                    <div class="factor-header">
+                        <span>Transaction Consistency</span>
+                        <span class="factor-impact positive">High Impact</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 75%;"></div>
+                    </div>
+                </div>
+
+                <div class="factor">
+                    <div class="factor-header">
+                        <span>Spending Behaviour</span>
+                        <span class="factor-impact neutral">Medium Impact</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 45%;"></div>
+                    </div>
+                </div>
+
+                <div class="factor">
+                    <div class="factor-header">
+                        <span>Repayment History</span>
+                        <span class="factor-impact negative">Critical</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 20%;"></div>
+                    </div>
+                </div>
+
+                <div id="informal-factor" class="factor" style="display: none;">
+                    <div class="factor-header">
+                        <span>Peer Endorsements</span>
+                        <span class="factor-impact positive">High Impact</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 60%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="endorsement-btn" class="btn btn-outline" style="display: none;"
+                onclick="navigateTo('peer-endorsement-screen')">Get Endorsements</button>
+        </section>
+
+        <!-- Loan Application Screen -->
+        <section id="loan-application-screen" class="screen">
+            <header style="margin-bottom: 24px;">
+                <button class="btn-outline"
+                    style="width: auto; padding: 8px 16px; font-size: 14px; margin-bottom: 16px;"
+                    onclick="navigateTo('dashboard-screen')">← Back</button>
+                <h2>Apply for Loan</h2>
+                <p>Select your desired amount and repayment term.</p>
+            </header>
+
+            <div class="input-group">
+                <label>Loan Amount (₦)</label>
+                <select id="loan-amount">
+                    <option value="10000">₦10,000</option>
+                    <option value="25000">₦25,000</option>
+                    <option value="50000">₦50,000</option>
+                    <option value="100000">₦100,000 (Requires score > 700)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Repayment Period</label>
+                <select>
+                    <option>1 Month</option>
+                    <option>3 Months</option>
+                    <option>6 Months</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary" onclick="handleLoanApplication()">Check Eligibility</button>
+
+            <div id="loan-decision" class="decision-overlay" style="display: none;">
+                <div class="decision-content">
+                    <h3 id="decision-title">Application Processing</h3>
+                    <p id="decision-msg">We are analyzing your transaction history...</p>
+                    <button class="btn btn-primary" onclick="closeDecision()">Close</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Peer Endorsement Screen -->
+        <section id="peer-endorsement-screen" class="screen">
+            <header style="margin-bottom: 24px;">
+                <button class="btn-outline"
+                    style="width: auto; padding: 8px 16px; font-size: 14px; margin-bottom: 16px;"
+                    onclick="navigateTo('score-breakdown-screen')">← Back</button>
+                <h2>Peer Endorsements</h2>
+                <p>Build trust by getting verified by other local businesses.</p>
+            </header>
+
+            <div class="endorsement-list">
+                <div class="endorsement-item">
+                    <span>Mama Shade Provisions</span>
+                    <button class="btn btn-primary" style="width: auto; padding: 8px 12px; margin: 0;"
+                        onclick="sendRequest(this)">Request</button>
+                </div>
+                <div class="endorsement-item">
+                    <span>Ojo Electronics</span>
+                    <button class="btn btn-primary" style="width: auto; padding: 8px 12px; margin: 0;"
+                        onclick="sendRequest(this)">Request</button>
+                </div>
+                <div class="endorsement-item">
+                    <span>Akure Fashion Hub</span>
+                    <button class="btn btn-primary" style="width: auto; padding: 8px 12px; margin: 0;"
+                        onclick="sendRequest(this)">Request</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
